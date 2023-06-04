@@ -34,7 +34,7 @@ app.layout = html.Div([
 
 # Define the callback to update the map based on the selected year
 @app.callback(
-    Output('world-map', 'figure'),
+    [Output('world-map', 'figure'), Output('continent-bar','figure')],
     [Input('year-slider', 'value')]
 )
 def update_map(selected_year):
@@ -51,7 +51,16 @@ def update_map(selected_year):
     )
     fig_map.update_geos(showcountries=True, showcoastlines=True, showland=True, fitbounds="locations")
     fig_map.update_layout(height=800, geo=dict(scope='world', projection_scale=1))
-    return fig_map
+    df_continent = df_year.groupby('Continent')[str(selected_year)].mean().reset_index()
+    fig_bar = px.bar(
+        df_continent,
+        x='Continent',
+        y=str(selected_year),
+        title=f'Average Internet Usage by Continent in {selected_year}',
+        labels={str(selected_year): 'Average Usage'},
+        color_discrete_sequence=px.colors.sequential.Plasma
+    )
+    return fig_map, fig_bar
 
 # Run the app
 if __name__ == '__main__':
