@@ -7,10 +7,6 @@ from dash.dependencies import Input, Output
 
 # Load the data
 df = pd.read_csv('internet_usage_clean.csv')
-# Load country-continent mapping
-country_continent = pd.read_csv('country_continent.csv')
-# Merge the dataframes
-df = pd.merge(df, country_continent, on='Country', how='left')
 # Extract unique years from the dataframe
 years = [col for col in df.columns if col.isdigit()]
 # Initialize the Dash app
@@ -26,15 +22,12 @@ app.layout = html.Div([
         marks={str(year): str(year) for year in years},
         step=None
     ),
-    html.Div([
-        dcc.Graph(id='world-map', style={"height" : "800px", "width": "65%"}),
-        dcc.Graph(id='continent-bar', style={"width": "35%"})
-    ], style={'display': 'flex', 'width': '100%'})
+    dcc.Graph(id='world-map', style={"height" : "800px", "width": "100%"})
 ])
 
 # Define the callback to update the map based on the selected year
 @app.callback(
-    [Output('world-map', 'figure'), Output('continent-bar','figure')],
+    Output('world-map', 'figure'),
     [Input('year-slider', 'value')]
 )
 def update_map(selected_year):
@@ -51,16 +44,7 @@ def update_map(selected_year):
     )
     fig_map.update_geos(showcountries=True, showcoastlines=True, showland=True, fitbounds="locations")
     fig_map.update_layout(height=800, geo=dict(scope='world', projection_scale=1))
-    df_continent = df_year.groupby('Continent')[str(selected_year)].mean().reset_index()
-    fig_bar = px.bar(
-        df_continent,
-        x='Continent',
-        y=str(selected_year),
-        title=f'Average Internet Usage by Continent in {selected_year}',
-        labels={str(selected_year): 'Average Usage'},
-        color_discrete_sequence=px.colors.sequential.Plasma
-    )
-    return fig_map, fig_bar
+    return fig_map
 
 # Run the app
 if __name__ == '__main__':
