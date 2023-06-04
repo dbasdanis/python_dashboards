@@ -26,7 +26,10 @@ app.layout = html.Div([
         marks={str(year): str(year) for year in years},
         step=None
     ),
-    dcc.Graph(id='world-map', style={"height" : "800px", "width": "100%"})
+    html.Div([
+        dcc.Graph(id='world-map', style={"height" : "800px", "width": "65%"}),
+        dcc.Graph(id='continent-bar', style={"width": "35%"})
+    ], style={'display': 'flex', 'width': '100%'})
 ])
 
 # Define the callback to update the map based on the selected year
