@@ -7,6 +7,10 @@ from dash.dependencies import Input, Output
 
 # Load the data
 df = pd.read_csv('internet_usage_clean.csv')
+# Load country-continent mapping
+country_continent = pd.read_csv('country_continent.csv')
+# Merge the dataframes
+df = pd.merge(df, country_continent, on='Country', how='left')
 # Extract unique years from the dataframe
 years = [col for col in df.columns if col.isdigit()]
 # Initialize the Dash app
