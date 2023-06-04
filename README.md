@@ -1,2 +1,2 @@
-# python_dashboards
+# Python Dashboards
 Python dashboard through ai
